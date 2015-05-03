@@ -10,7 +10,7 @@ var middleware = require('./middleware')
 var helpers = require('./helpers')
 
 /**
- * App loader
+ * API loader
  *
  * @params {Object} opts
  * @params {Object} opts.config
@@ -18,7 +18,7 @@ var helpers = require('./helpers')
  * @params {Object} opts.s3
  * @returns {Application} API application
  */
-module.exports = function appLoader ({config, models, s3}={}) {
+module.exports = function apiLoader ({config, models, s3}={}) {
   assert(config && models && s3, 'api requires config, models, and s3')
   debug('start')
 
@@ -39,7 +39,7 @@ module.exports = function appLoader ({config, models, s3}={}) {
     controllerLoader()
   ])
 
-  app.use(mount(config.endpoint, routes))
+  app.use(mount(config.apiEndpoint, routes))
 
   debug('end')
   return app
