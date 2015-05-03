@@ -1,0 +1,14 @@
+language: node_js
+
+node_js:
+  - iojs
+
+env:
+  global:
+    - NODE_ENV=test
+
+before_install:
+  - gem install fakes3
+
+before_script:
+  - npm run fakes3 &
