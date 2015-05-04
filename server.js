@@ -11,7 +11,7 @@ var debug = require('debug')('bshed:api:server')
 debug('loading libs and modules')
 var modelLoader = require('./models')
 var s3Loader = require('./lib/s3')
-var apiLoader = require('./api')
+var appLoader = require('./app')
 
 // configuration
 debug('loading and generating config')
@@ -22,7 +22,7 @@ var config = configGenerator({})
 debug('initializing libs and modules')
 var s3 = s3Loader(config.aws)
 var models = modelLoader(config)
-var api = apiLoader({config, models, s3})
+var app = appLoader({config, models, s3})
 
 /**
  * SERVER
@@ -35,7 +35,7 @@ Object.assign(server, {
   env: config.env,
   config,
   models,
-  api,
+  app,
   s3
 })
 
@@ -54,7 +54,7 @@ server.use(setCsrfToken()) // XSRF-TOKEN
  * APPLICATION
  */
 debug('mounting modules')
-server.use(mount(api))
+server.use(mount(app))
 
 /**
  * SERVER INITIALIZER

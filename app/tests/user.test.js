@@ -6,14 +6,14 @@ var {User} = models
 var user
 var headers
 
-describe('Request:Bikesheds', function () {
+describe('Request:Users', function () {
   describe('GET /api/users/current', function () {
     beforeEach(function* () {
       user = yield new User({
         name: chance.name(),
         email: chance.email()
       }).save()
-      headers = buildHeaders({user: {id: user.id}})
+      headers = buildHeaders({user: {name: user.name}})
     })
 
     it('returns the user', function* () {
@@ -23,7 +23,6 @@ describe('Request:Bikesheds', function () {
         .expect(200)
 
       expect(res.body).to.only.have.keys([
-        'id',
         'name',
         'email',
         'createdAt',

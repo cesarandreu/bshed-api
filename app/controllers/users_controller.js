@@ -1,5 +1,5 @@
 var Router = require('koa-router')
-var middleware = require('../middleware')
+var middleware = require('../../utils/middleware')
 
 module.exports = UsersController
 function UsersController () {
@@ -7,7 +7,7 @@ function UsersController () {
 
   var routes = new Router()
   .get(
-    '/users/current',
+    '/api/users/current',
     auth,
     UsersController.current
   )
@@ -16,7 +16,7 @@ function UsersController () {
 }
 
 /**
- * GET /users/current
+ * GET /api/users/current
  */
 UsersController.current = function* current () {
   this.body = this.state.user

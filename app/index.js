@@ -6,8 +6,8 @@ var qs = require('koa-qs')
 var koa = require('koa')
 
 var controllerLoader = require('./controllers')
-var middleware = require('./middleware')
-var helpers = require('./helpers')
+var middleware = require('../utils/middleware')
+var helpers = require('../utils/helpers')
 
 /**
  * API loader
@@ -39,7 +39,7 @@ module.exports = function apiLoader ({config, models, s3}={}) {
     controllerLoader()
   ])
 
-  app.use(mount(config.apiEndpoint, routes))
+  app.use(mount('/', routes))
 
   debug('end')
   return app

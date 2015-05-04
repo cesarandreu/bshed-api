@@ -2,8 +2,8 @@ var fs = require('fs')
 var Joi = require('joi')
 var _ = require('lodash')
 var Router = require('koa-router')
-var middleware = require('../middleware')
 var bodyParser = require('koa-better-body')
+var middleware = require('../../utils/middleware')
 
 module.exports = BikeshedsController
 function BikeshedsController () {
@@ -18,27 +18,27 @@ function BikeshedsController () {
 
   var routes = new Router()
   .get(
-    '/bikesheds',
+    '/api/bikesheds',
     BikeshedsController.index
   )
   .post(
-    '/bikesheds',
+    '/api/bikesheds',
     auth,
     bodyFile,
     BikeshedsController.create
   )
   .get(
-    '/bikesheds/:bikeshed',
+    '/api/bikesheds/:bikeshed',
     BikeshedsController.show
   )
   .post(
-    '/bikesheds/:bikeshed/votes',
+    '/api/bikesheds/:bikeshed/votes',
     auth,
     bodyForm,
     BikeshedsController.rate
   )
   .get(
-    '/bikesheds/:bikeshed/votes',
+    '/api/bikesheds/:bikeshed/votes',
     auth,
     BikeshedsController.votes
   )
@@ -47,7 +47,7 @@ function BikeshedsController () {
 }
 
 /**
- * GET /bikesheds?limit&after
+ * GET /api/bikesheds?limit&after
  */
 BikeshedsController.index = function* index () {
   var {Bikeshed, r} = this.models
@@ -72,7 +72,7 @@ BikeshedsController.index = function* index () {
 }
 
 /**
- * POST /bikesheds
+ * POST /api/bikesheds
  */
 BikeshedsController.create = function* create () {
   var {Bikeshed, Bike} = this.models
@@ -85,7 +85,7 @@ BikeshedsController.create = function* create () {
 
   var bikeshed = yield new Bikeshed({
     description: value.fields.description,
-    userId: user.id,
+    username: user.name,
     bikes: _.map(value.files, file => {
       return new Bike({
         type: file.type,
@@ -163,7 +163,7 @@ BikeshedsController.create.schema = Joi.object().required().keys({
 
 
 /**
- * GET /bikesheds/:bikeshed
+ * GET /api/bikesheds/:bikeshed
  */
 BikeshedsController.show = function* show () {
   var {Bikeshed} = this.models
@@ -184,7 +184,7 @@ BikeshedsController.show = function* show () {
 
 
 /**
- * POST /bikesheds/:bikeshed/votes
+ * POST /api/bikesheds/:bikeshed/votes
  */
 BikeshedsController.rate = function* rate () {
   var {Bikeshed, Rating, Vote} = this.models
@@ -197,18 +197,18 @@ BikeshedsController.rate = function* rate () {
   if (!bikeshed)
     this.throw(404, 'Bikeshed not found')
 
-  if (_.some(bikeshed.votes, {userId: user.id}))
+  if (_.some(bikeshed.votes, {username: user.name}))
     this.throw(409, 'Bikeshed already rated')
 
   var vote = yield new Vote({
     bikeshedId: bikeshed.id,
-    userId: user.id
+    username: user.name
   }).save()
 
   var voteCount = yield Vote
     .filter({
       bikeshedId: bikeshed.id,
-      userId: user.id
+      username: user.name
     })
     .count()
 
@@ -267,7 +267,7 @@ BikeshedsController.rate.schema = Joi.object().required().keys({
 })
 
 /**
- * GET /bikesheds/:bikeshed/votes
+ * GET /api/bikesheds/:bikeshed/votes
  */
 BikeshedsController.votes = function* () {
   var {Bikeshed, Vote} = this.models
@@ -282,7 +282,7 @@ BikeshedsController.votes = function* () {
   var votes = yield Vote
     .filter({
       bikeshedId: bikeshed.id,
-      userId: user.id
+      username: user.name
     })
 
   if (!votes.length)

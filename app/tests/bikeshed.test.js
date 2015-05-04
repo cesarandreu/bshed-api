@@ -25,7 +25,7 @@ describe('Request:Bikesheds', function () {
         name: chance.name(),
         email: chance.email()
       }).save()
-      headers = buildHeaders({user: {id: user.id}})
+      headers = buildHeaders({user: {name: user.name}})
     })
 
     it('lets you create bikeshed and returns 201', function* () {
@@ -40,8 +40,8 @@ describe('Request:Bikesheds', function () {
         'description',
         'updatedAt',
         'createdAt',
+        'username',
         'status',
-        'userId',
         'bikes',
         'id'
       ])
@@ -91,12 +91,12 @@ describe('Request:Bikesheds', function () {
         name: chance.name(),
         email: chance.email()
       }).save()
-      headers = buildHeaders({user: {id: user.id}})
+      headers = buildHeaders({user: {name: user.name}})
     })
 
     it('lets you rank bikes in bikeshed', function* () {
       var bikeshed = yield new Bikeshed({
-        userId: user.id,
+        username: user.name,
         status: 'success',
         bikes: _.times(5, n => new Bike({
           type: 'image/jpeg',
@@ -121,8 +121,8 @@ describe('Request:Bikesheds', function () {
 
       expect(res.body.bikeshedId)
         .to.equal(bikeshed.id)
-      expect(res.body.userId)
-        .to.equal(user.id)
+      expect(res.body.username)
+        .to.equal(user.name)
       expect(res.body.ratings)
         .to.be.an('array')
 
@@ -153,7 +153,7 @@ describe('Request:Bikesheds', function () {
 
       user.votes = _.times(1, n => new Vote({
         bikeshedId: user.bikesheds[0].id,
-        userId: user.id,
+        username: user.name,
         ratings: user.bikesheds[0].bikes.map((bike, idx) => new Rating({
           bikeId: bike.id,
           value: idx + 1
@@ -161,7 +161,7 @@ describe('Request:Bikesheds', function () {
       }))
 
       user = yield user.saveAll()
-      headers = buildHeaders({user: {id: user.id}})
+      headers = buildHeaders({user: {name: user.name}})
     })
 
     it('returns your vote', function* () {
