@@ -20,7 +20,6 @@ module.exports = function configGenerator (overwrite={}) {
 
   var config = _.merge({
     env: env,
-    apiEndpoint: '/api',
     name: 'bshed-api',
     middleware: {
       session: {
