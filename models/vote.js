@@ -1,7 +1,7 @@
 module.exports = function (thinky, type) {
   var Vote = thinky.createModel('Vote', {
     id: type.string().default(thinky.r.uuid).required(),
-    userId: type.string().required(),
+    username: type.string().required(),
     bikeshedId: type.string().required(),
     updatedAt: type.date().default(() => new Date()).required(),
     createdAt: type.date().default(() => new Date()).required()
@@ -24,6 +24,6 @@ module.exports = function (thinky, type) {
 
 function associate (models) {
   models.Vote.belongsTo(models.Bikeshed, 'bikeshed', 'bikeshedId', 'id')
-  models.Vote.belongsTo(models.User, 'user', 'userId', 'id')
+  models.Vote.belongsTo(models.User, 'user', 'username', 'name')
   models.Vote.hasMany(models.Rating, 'ratings', 'id', 'voteId')
 }

@@ -1,12 +1,11 @@
 module.exports = function (thinky, type) {
   var User = thinky.createModel('User', {
-    id: type.string().default(thinky.r.uuid).required(),
-    name: type.string().max(255).default('').required(),
+    name: type.string().max(255).required(),
     email: type.string().min(3).max(254).email().required(),
     updatedAt: type.date().default(() => new Date()).required(),
     createdAt: type.date().default(() => new Date()).required()
   }, {
-    pk: 'id',
+    pk: 'name',
     enforce_extra: 'strict',
     enforce_type: 'strict',
     enforce_missing: true
@@ -23,6 +22,6 @@ module.exports = function (thinky, type) {
 }
 
 function associate (models) {
-  models.User.hasMany(models.Bikeshed, 'bikesheds', 'id', 'userId')
-  models.User.hasMany(models.Vote, 'votes', 'id', 'userId')
+  models.User.hasMany(models.Bikeshed, 'bikesheds', 'name', 'username')
+  models.User.hasMany(models.Vote, 'votes', 'name', 'username')
 }

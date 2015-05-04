@@ -4,8 +4,7 @@
 
 ```
 User {
-  id:string:pk
-  name:string
+  name:string:pk
   email:string
   createdAt:date
   updatedAt:date
@@ -18,7 +17,7 @@ Bikeshed {
   createdAt:date
   updatedAt:date
 
-  userId:string
+  username:string
 }
 
 Bike {
@@ -38,7 +37,7 @@ Vote {
   createdAt:date
   updatedAt:date
 
-  userId:string
+  username:string
   bikeshedId:string
 }
 
