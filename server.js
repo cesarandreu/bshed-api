@@ -49,6 +49,7 @@ server.use(compress()) // compression
 server.use(session(config.middleware.session, server)) // cookie sessions
 server.use(csrf()) // csrf token
 server.use(setCsrfToken()) // XSRF-TOKEN
+server.use(setLoggedInCookie()) // logged_in
 
 /**
  * APPLICATION
@@ -75,10 +76,27 @@ if (require.main === module)
 /**
  * setCsrfToken
  * Middleware to set XSRF-TOKEN cookie on every response
+ * Session check is needed in case it's null
  */
 function setCsrfToken () {
   return function* setCsrfCookieMidleware (next) {
-    this.cookies.set('XSRF-TOKEN', this.csrf)
     yield next
+    if (this.session)
+      this.cookies.set('XSRF-TOKEN', this.csrf, {httpOnly: false})
+  }
+}
+
+/**
+ * setLoggedInCookie
+ * Middleware to set logged_in cookie on every response
+ * Used by client to try to guess allowed states
+ */
+function setLoggedInCookie () {
+  return function* setLoggedInCookieMiddleware (next) {
+    yield next
+    var loggedIn = this.session && this.session.user && this.session.user.name
+    this.cookies.set('logged_in', loggedIn ? 'yes' : 'no', {
+      httpOnly: false
+    })
   }
 }
