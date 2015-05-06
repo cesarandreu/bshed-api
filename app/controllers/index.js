@@ -20,7 +20,8 @@ function controllerLoader () {
 controllerLoader.load = function load () {
   var controllers = [
     'users',
-    'bikesheds'
+    'bikesheds',
+    'authentications'
   ].reduce((controllers, name) => {
     debug(`loading ${name} controller`)
     controllers[name] = require(`./${name}_controller`)
